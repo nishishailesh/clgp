@@ -25,3 +25,9 @@ class my_sql(object):
 
   def close_link(self):
     self.con.close()
+
+  def get_column_names(self,cur):
+    fields=()
+    for field in cur.description:
+      fields=fields+(field[0],)
+    return fields

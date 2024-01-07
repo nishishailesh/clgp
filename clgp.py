@@ -29,12 +29,42 @@ def get_tat():
 @route('/check_login',method='POST')
 def chk():
   cur=m.run_query('select * from user where user=%s',(request.POST.login,))
-  data=m.get_single_row(cur)
-  logging.debug('user data:{}'.format(data))
-  if(bcrypt.checkpw(request.POST.password.encode(),data[2].encode())):
-    message='password success'
+  user_info=m.get_single_row(cur)
+  logging.debug('user data:{}'.format(user_info))
+
+
+  '''
+  Python: bcrypt.hashpw(b'mypassword',bcrypt.gensalt(rounds= 1,prefix = b'2b')
+  PHP:    password_hash('mypassword',PASSWORD_BCRYPT);
+
+  Python:bcrypt.checkpw(b'text',b'bcrypted password')
+  PHP: password_verify('text,'bcrypted password')
+  '''
+  #try is required to cache NoneType exception when supplied hash is not bcrypt
+  try:
+    if(bcrypt.checkpw(request.POST.password.encode(),user_info[2].encode())):
+      message='password success'
+    else:
+      message='password fail'
+  except Exception as ex:
+    logging.debug('{}'.format(ex))
+    message='password can not be checked'
+    
+  #now modify password data display
+  mypost=request.POST
+  mypost['password']="****"
+  if(user_info!=None):
+    user_info=list(user_info) #tuple to list, to change password field
+    user_info[2]='***'
   else:
-    message='password fail'    
-  return template('check_login.tpl',post_table=common_d.list_post(),login_user='{}'.format(data),message=message)
+    user_info=()
+  user_info_columns=m.get_column_names(cur)
+    
+  return template(
+                    'check_login.tpl',
+                    post=mypost,
+                    user_info=user_info,
+                    user_info_columns=m.get_column_names(cur),
+                    message=message)
 
 #TEMPLATE_PATH = ['./', './views/']
