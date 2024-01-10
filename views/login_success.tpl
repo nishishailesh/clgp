@@ -14,3 +14,8 @@
 </tr>
 </table>
 <h3 class="text-success">{{message}}</h3>
+<h3 class="text-success">{{token}}</h3>
+<form method=post>
+<input type=hidden name=token value={{token}}>
+<input type=submit name=action value=submit>
+</form>

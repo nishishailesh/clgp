@@ -1,3 +1,7 @@
+#!/usr/bin/python3
+import os
+import config
+print(config.project_dir)
 loginnn="""
 <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
 <form method=post action="check_login" class="bg-light">
@@ -21,3 +25,8 @@ asdasdas
 asdasdsa
 """
 print(b)
+
+print(os.path.abspath(__file__))
+print(os.path.basename(__file__))
+print(os.path.dirname(__file__))
+print(os.path.dirname(os.path.abspath(__file__)))
